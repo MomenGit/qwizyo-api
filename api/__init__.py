@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from api.resources import auth_resource, user_resource
 from mongoengine import connect
@@ -29,6 +30,7 @@ def init_api(app: Flask):
     api.add_resource(user_resource.User, '/users/<string:id>')
     api.add_resource(auth_resource.RegisterAuth, '/auth/register')
     api.add_resource(auth_resource.LoginAuth, '/auth/login')
+    api.add_resource(auth_resource.TokenRefresh, '/auth/refresh')
     """ api.add_resource('/quizzes')
     api.add_resource('/quizzes/<str:id>')
     api.add_resource('/groups')
@@ -48,6 +50,8 @@ def create_app(test_config=None):
     )
 
     CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
+    app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
+    jwt = JWTManager(app)
     init_api(app)
     init_db(app)
 
