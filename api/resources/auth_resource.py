@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
 """Defines Auth Resources for Auth Routes Handling"""
-from datetime import datetime, timezone
-from api.models.user import User
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import (
-    create_access_token,
-    create_refresh_token,
     jwt_required,
-    get_jwt_identity,
 )
-from werkzeug.security import generate_password_hash, check_password_hash
+from api.services.auth_service import (
+    authenticate, generate_refresh_token, register_user)
 
 
 class RegisterAuth(Resource):
@@ -39,37 +35,7 @@ class RegisterAuth(Resource):
         """Register new User to the database"""
         data = self.parser.parse_args()
 
-        retrieve_username = User.objects(username=data["username"])
-        if retrieve_username:
-            return {"message": "The username already exist"}, 409
-
-        retrieve_email = User.objects(email=data["email"])
-        if retrieve_email:
-            return {"message": "The email already exist"}, 409
-
-        password: str = data["password"]
-        if len(password) < 7:
-            return {"message": "The password is too short"}, 409
-        if len(password) > 14:
-            return {"message": "The password is too long"}, 409
-        if not password.isalnum():
-            return {
-                "message":
-                "The password can not contains non-alphanumeric characters"
-            }, 409
-
-        new_user = User(
-            username=data["username"],
-            email=data["email"],
-            password=generate_password_hash(password),
-            role=data["role"],
-            first_name=data["first_name"],
-            last_name=data["last_name"],
-            created_at=datetime.now(tz=timezone.utc),
-            updated_at=datetime.now(tz=timezone.utc),
-        )
-        new_user.save()
-        return new_user.to_json(), 201
+        return register_user(data)
 
 
 class LoginAuth(Resource):
@@ -91,16 +57,10 @@ class LoginAuth(Resource):
         """
         data = self.parser.parse_args()
         # read from database to find the user and then check the password
-        user = User.objects(username=data["username"]).first()
-        if user and check_password_hash(user.password, data['password']):
-            # when authenticated, return a fresh access token and a refresh token
-            access_token = create_access_token(
-                identity=str(user.id), fresh=True)
-            refresh_token = create_refresh_token(str(user.id))
-            return {
-                'access_token': access_token,
-                'refresh_token': refresh_token
-            }, 200
+
+        result = authenticate(data['username'], data['password'])
+        if result is not None:
+            return result
 
         return {"message": "Invalid Credentials!"}, 401
 
@@ -112,9 +72,5 @@ class TokenRefresh(Resource):
         Returns:
             A non-fresh JWT Access Token
         """
-        # retrive the user's identity from the refresh token
-        # using a Flask-JWT-Extended built-in method
-        current_user = get_jwt_identity()
-        # return a non-fresh token for the user
-        new_token = create_access_token(identity=current_user, fresh=False)
+        new_token = generate_refresh_token()
         return {"access_token": new_token}, 200
