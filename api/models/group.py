@@ -1,17 +1,22 @@
 #!/usr/bin/env python3
-""""""
-from api.models.assignment import Assignment
+"""Define Group Document Model Class"""
+from datetime import datetime, timezone
 from api.models.user import User
-from mongoengine import StringField, ReferenceField, ListField
-from mongoengine import DateTimeField, Document
+from mongoengine import (
+    StringField,
+    ReferenceField,
+    ListField,
+    DateTimeField,
+    Document
+)
 
 
 class Group(Document):
-    """"""
+    """Group Document Model"""
     name = StringField(required=True)
     description = StringField()
     tutor = ReferenceField(User)
     students = ListField(ReferenceField(User))
-    assignments = ListField(ReferenceField(Assignment))
-    created_at = DateTimeField()
-    updated_at = DateTimeField()
+    assignments = ListField(ReferenceField("Assignment"))
+    created_at = DateTimeField(default=datetime.now(tz=timezone.utc))
+    updated_at = DateTimeField(default=datetime.now(tz=timezone.utc))
