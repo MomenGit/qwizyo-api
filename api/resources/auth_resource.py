@@ -47,10 +47,21 @@ class RegisterAuth(Resource):
         if retrieve_email:
             return {"message": "The email already exist"}, 409
 
+        password: str = data["password"]
+        if len(password) < 7:
+            return {"message": "The password is too short"}, 409
+        if len(password) > 14:
+            return {"message": "The password is too long"}, 409
+        if not password.isalnum():
+            return {
+                "message":
+                "The password can not contains non-alphanumeric characters"
+            }, 409
+
         new_user = User(
             username=data["username"],
             email=data["email"],
-            password=generate_password_hash(data["password"]),
+            password=generate_password_hash(password),
             role=data["role"],
             first_name=data["first_name"],
             last_name=data["last_name"],
