@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""""""
+"""Defines authentication service functions"""
 from flask_jwt_extended import (
     create_access_token, get_jwt_identity, create_refresh_token)
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -7,8 +7,11 @@ from api.models.user import User
 from datetime import datetime, timezone
 
 
-def generate_refresh_token():
-    """"""
+def generate_non_fresh_access_token():
+    """Generates a non-fresh access token using refresh token
+    Returns:
+        New non-fresh access token
+    """
     # retrive the user's identity from the refresh token
     # using a Flask-JWT-Extended built-in method
     current_user = get_jwt_identity()
@@ -18,7 +21,14 @@ def generate_refresh_token():
 
 
 def authenticate(username, password):
-    """"""
+    """Authenticate user on login request
+    Args:
+        username (string): user's username
+        password (string): user's plain text password
+    Returns:
+        - On success: new access and refresh tokens
+        - Otherwise: None
+    """
     user = User.objects(username=username).first()
     if user and check_password_hash(user.password, password):
         # when authenticated, return a fresh access token and a refresh token
@@ -34,7 +44,13 @@ def authenticate(username, password):
 
 
 def register_user(data):
-    """"""
+    """Register new user
+    Args:
+        Data (dict): User's registered data
+    Returns:
+        - On success: new user, 201 created status code
+        - Otherwise: error message, 409 conflict status code
+    """
     retrieve_username = User.objects(username=data["username"])
     if retrieve_username:
         return {"message": "The username already exist"}, 409

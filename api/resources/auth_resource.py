@@ -5,7 +5,7 @@ from flask_jwt_extended import (
     jwt_required,
 )
 from api.services.auth_service import (
-    authenticate, generate_refresh_token, register_user)
+    authenticate, generate_non_fresh_access_token, register_user)
 
 
 class RegisterAuth(Resource):
@@ -72,5 +72,5 @@ class TokenRefresh(Resource):
         Returns:
             A non-fresh JWT Access Token
         """
-        new_token = generate_refresh_token()
+        new_token = generate_non_fresh_access_token()
         return {"access_token": new_token}, 200
