@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Defines Group Resource for Group Routes Handling
 """
-import json
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource, reqparse
 from api.common.decorators import role_required
@@ -53,6 +52,8 @@ class Groups(Resource):
         )
         args = parser.parse_args()
         new_group = create_group(user, args)
+        if new_group is None:
+            return {"message": "Group with the same name exists"}, 409
 
         return {
             "id": str(new_group.id),
