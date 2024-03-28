@@ -4,8 +4,7 @@ from flask_restful import Resource, reqparse
 from flask_jwt_extended import (
     jwt_required,
 )
-from api.services.auth_service import (
-    authenticate, generate_non_fresh_access_token, register_user)
+from api.services.auth_service import AuthService
 
 
 class RegisterAuth(Resource):
@@ -35,7 +34,7 @@ class RegisterAuth(Resource):
         """Register new User to the database"""
         data = self.parser.parse_args()
 
-        return register_user(data)
+        return AuthService.register_user(data)
 
 
 class LoginAuth(Resource):
@@ -58,7 +57,7 @@ class LoginAuth(Resource):
         data = self.parser.parse_args()
         # read from database to find the user and then check the password
 
-        result = authenticate(data['username'], data['password'])
+        result = AuthService.authenticate(data['username'], data['password'])
         if result is not None:
             return result
 
@@ -72,5 +71,5 @@ class TokenRefresh(Resource):
         Returns:
             A non-fresh JWT Access Token
         """
-        new_token = generate_non_fresh_access_token()
+        new_token = AuthService.generate_non_fresh_access_token()
         return {"access_token": new_token}, 200
