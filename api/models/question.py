@@ -15,7 +15,7 @@ class Question(EmbeddedDocument):
     type = StringField(
         required=True, choices=['multiple-choice', 'short-answer', 'long-answer'])
     question = StringField(required=True)
-    options = ListField(StringField)  # for multiple-choice questions
+    options = ListField(StringField())  # for multiple-choice questions
     correct_answer = StringField(required=True)
     points = FloatField(required=True)
     created_at = DateTimeField(default=datetime.now(tz=timezone.utc))
