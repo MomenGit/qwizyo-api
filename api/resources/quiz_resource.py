@@ -24,7 +24,7 @@ class Quiz(Resource):
 
     @jwt_required(optional=False, fresh=True)
     @role_required('tutor')
-    def put(self, id):
+    def put(self, id, user):
         """Update quiz details"""
         parser = reqparse.RequestParser()
 
@@ -33,9 +33,23 @@ class Quiz(Resource):
         )
         parser.add_argument("description", type=str, required=False)
         parser.add_argument(
-            "questions", type=dict, required=False, help="This field cannot be blank."
+            "questions", type=list, required=False, help="This field cannot be blank.",
+            location='json'
         )
-        pass
+        args = parser.parse_args()
+
+        try:
+            QuizService.update_quiz(
+                id=id,
+                tutor=user,
+                title=args.get('title'),
+                description=args.get('description'),
+                questions=args.get('questions')
+            )
+        except Exception as err:
+            return {"message": str(err)}, 409
+
+        return {"message": "Quiz has been updated successfully"}, 200
 
     @jwt_required(optional=False, fresh=True)
     @role_required('tutor')
