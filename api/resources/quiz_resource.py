@@ -15,7 +15,12 @@ class Quiz(Resource):
     @role_required('tutor')
     def get(self, id, user):
         """Retrieve details of a specific quiz"""
-        pass
+        try:
+            quiz = QuizService.find_quiz_by_id(id, tutor=user)
+        except Exception as err:
+            return {"message": str(err)}, 404
+
+        return json.loads(quiz.to_json()), 200
 
     @jwt_required(optional=False, fresh=True)
     @role_required('tutor')
