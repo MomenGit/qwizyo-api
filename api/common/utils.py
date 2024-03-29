@@ -3,6 +3,7 @@
 from api.resources import (
     auth_resource,
     group_resource,
+    quiz_resource,
     user_resource,
     miscellaneous_resource
 )
@@ -17,10 +18,8 @@ def setup_routes(api):
     api.add_resource(miscellaneous_resource.Status, '/ping')
     api.add_resource(group_resource.Groups, '/groups')
     api.add_resource(group_resource.Group, '/groups/<string:id>')
-    api.add_resource(group_resource.GroupStudents,
-                     '/groups/<string:id>/students')
-    api.add_resource(group_resource.GroupAssignments,
-                     '/groups/<string:id>/assignments')
+    api.add_resource(quiz_resource.QuizList, '/quizzes')
+    api.add_resource(quiz_resource.Quiz, '/quizzes/<string:id>')
     """ api.add_resource('/quizzes')
     api.add_resource('/quizzes/<str:id>')
     api.add_resource('/assignments')
