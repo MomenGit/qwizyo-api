@@ -18,7 +18,8 @@ class AssignmentService:
             id (string): assignment id
             tutor (user): assignment tutor
         """
-        assignment = Assignment.objects(id=id).first()
+        assignment: Assignment = Assignment.objects(id=id).first()
+        assignment.select_related()
 
         if assignment is None:
             raise Exception("Assignment not Found")
