@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Defines Group Resource for Group Routes Handling
 """
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource, reqparse
 from api.common.decorators import role_required
-from api.services.groups_service import GroupService
+from api.services.group_service import GroupService
 
 
 class Group(Resource):
@@ -18,7 +18,7 @@ class Group(Resource):
             return 404
 
         return {
-            "name": group.name,
+            "title": group.title,
             "description": group.description,
             "students": group.students,
             "assignments": group.assignments
@@ -29,7 +29,7 @@ class Group(Resource):
     def put(self, id, tutor):
         """Updates group's profile"""
         parser = reqparse.RequestParser()
-        parser.add_argument("name", type=str)
+        parser.add_argument("title", type=str)
         parser.add_argument("description", type=str)
         parser.add_argument("assignments", type=str)
         parser.add_argument("students", type=str)
@@ -59,7 +59,7 @@ class Groups(Resource):
         return [
             {
                 "id": str(group.id),
-                "name": group.name,
+                "title": group.title,
                 "description": group.description,
                 "tutor": str(group.tutor)
             } for group in GroupService.find_groups(user)], 200
@@ -70,18 +70,18 @@ class Groups(Resource):
         """Creates new group"""
         parser = reqparse.RequestParser()
         parser.add_argument(
-            "name", type=str, required=True, help="This field cannot be blank.")
+            "title", type=str, required=True, help="This field cannot be blank.")
         parser.add_argument(
             "description", type=str, required=True, help="This field cannot be blank."
         )
         args = parser.parse_args()
         new_group = GroupService.create_group(user, args)
         if new_group is None:
-            return {"message": "Group with the same name exists"}, 409
+            return {"message": "Group with the same title exists"}, 409
 
         return {
             "id": str(new_group.id),
-            "name": new_group.name,
+            "title": new_group.title,
             "description": new_group.description
         }, 201
 

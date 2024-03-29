@@ -4,7 +4,7 @@
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource, reqparse
 from api.models.user import User as UserModel
-from api.services.users_service import UserService
+from api.services.user_service import UserService
 
 
 class User(Resource):
