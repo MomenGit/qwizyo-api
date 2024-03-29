@@ -66,6 +66,19 @@ class Assignment(Resource):
 
 class AssignmentList(Resource):
     """Assignments List Resource Route Handler"""
+
+    @jwt_required(optional=False)
+    @role_required('student')
+    def get(self, user):
+        """Retrieve assignments of a specific student"""
+        try:
+            assignments = AssignmentService.find_assignments_of_student(
+                student=user)
+        except Exception as err:
+            return {"message": str(err)}, 404
+
+        return [json.loads(assignment.to_json())for assignment in assignments], 200
+
     @jwt_required(optional=False, fresh=True)
     @role_required('tutor')
     def post(self, user):
@@ -80,11 +93,11 @@ class AssignmentList(Resource):
         parser.add_argument("students_ids", type=list,
                             required=False, location='json')
         args = parser.parse_args()
-        args = parser.parse_args()
 
         try:
             assignment = AssignmentService.create_assignment(
                 quiz_id=id,
+                tutor=user,
                 duration=args.get('duration'),
                 start_at=args.get('start_at'),
                 due_at=args.get('due_at'),
@@ -97,28 +110,12 @@ class AssignmentList(Resource):
         return json.loads(assignment.to_json()), 201
 
 
-class StudentAssignmentsList(Resource):
-    """Assignments List Resource Route Handler"""
-
-    @jwt_required(optional=False)
-    @role_required('student')
-    def get(self, id, user):
-        """Retrieve assignments of a specific group"""
-        try:
-            assignments = AssignmentService.find_assignments_of_student(
-                student_id=id)
-        except Exception as err:
-            return {"message": str(err)}, 404
-
-        return [json.loads(assignment.to_json())for assignment in assignments], 200
-
-
 class GroupAssignmentsList(Resource):
-    """Assignments List Resource Route Handler"""
+    """Group Assignments List Resource Route Handler"""
 
     @jwt_required(optional=False)
     @role_required('tutor', 'student')
-    def get(self, id, user):
+    def get(self, id):
         """Retrieve assignments of a specific group"""
         try:
             assignments = AssignmentService.find_assignments_of_group(
@@ -130,7 +127,7 @@ class GroupAssignmentsList(Resource):
 
 
 class QuizAssignmentsList(Resource):
-    """Assignments List Resource Route Handler"""
+    """Quiz Assignments List Resource Route Handler"""
 
     @jwt_required(optional=False)
     @role_required('tutor')

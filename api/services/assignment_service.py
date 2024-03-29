@@ -4,6 +4,7 @@ from datetime import datetime
 from api.models.group import Group
 from api.models.assignment import Assignment
 from api.models.user import User
+from api.services.group_service import GroupService
 from api.services.quiz_service import QuizService
 
 
@@ -39,28 +40,28 @@ class AssignmentService:
         return assignments
 
     @staticmethod
-    def find_assignments_of_student(student_id):
+    def find_assignments_of_student(student):
         """Returns assignment by quiz_id and tutor
         Args:
-            id (string): quiz id
-            tutor (user): quiz tutor
+            student (User): student user
         """
-        assignments = Assignment.objects(students_ids=student_id)
+        assignments = Assignment.objects(students=student)
 
         return assignments
 
     @staticmethod
     def find_assignments_of_group(group_id):
-        """Returns assignment by quiz_id and tutor
+        """Returns assignments by group_id
         Args:
-            id (string): quiz id
+            group_id (string): group id
         """
-        assignments = Assignment.objects(groups_ids=group_id)
+        group = GroupService.find_group_by_id(group_id)
+        assignments = Assignment.objects(groups=group)
 
         return assignments
 
     @staticmethod
-    def create_assignment(quiz_id, duration, start_at, due_at,
+    def create_assignment(quiz_id, tutor, duration, start_at, due_at,
                           groups_ids, students_ids):
         """Creates assignment data
         Args:
@@ -71,10 +72,12 @@ class AssignmentService:
             start_at (str): assignment start date
             due_at (str): assignment due date
         """
+        quiz = QuizService.find_quiz_by_id(id=quiz_id, tutor=tutor)
+
         new_assignment = Assignment(
-            quiz_id=quiz_id,
-            groups_ids=groups_ids,
-            students_ids=students_ids,
+            quiz=quiz,
+            groups=[Group.objects(id=id).first() for id in groups_ids],
+            students=[User.objects(id=id).first() for id in students_ids],
             duration=duration,
             start_at=start_at,
             due_at=due_at
