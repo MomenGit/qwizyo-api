@@ -6,7 +6,6 @@ from flask_jwt_extended import jwt_required
 from flask_restful import Resource, reqparse
 from api.common.decorators import role_required
 from api.services.assignment_service import AssignmentService
-from api.services.quiz_service import QuizService
 
 
 class Assignment(Resource):
@@ -85,6 +84,7 @@ class AssignmentList(Resource):
         """Create a new assignment"""
         parser = reqparse.RequestParser()
 
+        parser.add_argument("quiz_id", type=str, required=False)
         parser.add_argument("duration", type=int, required=False)
         parser.add_argument("start_at", type=str, required=False)
         parser.add_argument("due_at", type=str, required=False)
@@ -96,7 +96,7 @@ class AssignmentList(Resource):
 
         try:
             assignment = AssignmentService.create_assignment(
-                quiz_id=id,
+                quiz_id=args.get('quiz_id'),
                 tutor=user,
                 duration=args.get('duration'),
                 start_at=args.get('start_at'),

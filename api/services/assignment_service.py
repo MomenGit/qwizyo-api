@@ -74,14 +74,22 @@ class AssignmentService:
         """
         quiz = QuizService.find_quiz_by_id(id=quiz_id, tutor=tutor)
 
-        new_assignment = Assignment(
-            quiz=quiz,
-            groups=[Group.objects(id=id).first() for id in groups_ids],
-            students=[User.objects(id=id).first() for id in students_ids],
-            duration=duration,
-            start_at=start_at,
-            due_at=due_at
-        )
+        new_assignment = Assignment(quiz=quiz)
+
+        if duration:
+            new_assignment.duration = duration
+        if start_at:
+            new_assignment.start_at = datetime.strptime(
+                start_at, "%Y-%m-%d %H:%M:%S")
+        if due_at:
+            new_assignment.due_at = datetime.strptime(
+                due_at, "%Y-%m-%d %H:%M:%S")
+        if students_ids:
+            new_assignment.students = [User.objects(
+                id=id).first() for id in students_ids]
+        if groups_ids:
+            new_assignment.groups = [Group.objects(
+                id=id).first() for id in groups_ids]
 
         new_assignment.save()
         return new_assignment
