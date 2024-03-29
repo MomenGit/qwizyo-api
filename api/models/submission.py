@@ -19,19 +19,22 @@ from mongoengine import (
 
 class Answer(EmbeddedDocument):
     """Submission Answer Document Model"""
-    question = ReferenceField(Question)
+    question = ReferenceField(Question, db_field="question_id")
     submitted_answer = StringField()
     is_correct = BooleanField()
     points = FloatField()  # For questions other than multiple-choice
+    meta = {"collection": "answers"}
 
 
 class Submission(Document):
     """Assignment Submission Document Model"""
-    assignment = ReferenceField(Assignment)
-    student = ReferenceField(User)
+    assignment = ReferenceField(Assignment, db_field="assignment_id")
+    quiz = ReferenceField(Assignment, db_field="quiz_id")
+    student = ReferenceField(User, db_field="student_id")
     answers = EmbeddedDocumentListField(Answer)
     score = FloatField()
     completion_time = IntField()
     submitted_at = DateTimeField()
     created_at = DateTimeField(default=datetime.now(tz=timezone.utc))
     updated_at = DateTimeField(default=datetime.now(tz=timezone.utc))
+    meta = {"collection": "submissions"}

@@ -14,11 +14,12 @@ from api.models.user import User
 
 class Assignment(Document):
     """Assignment Document Model"""
-    quiz = ReferenceField(Quiz)
-    groups = ListField(ReferenceField('Group'))
-    students = ListField(ReferenceField(User))
+    quiz = ReferenceField(Quiz, db_field="quiz_id")
+    groups = ListField(ReferenceField('Group'), db_field="groups_ids")
+    students = ListField(ReferenceField(User), db_field="students_ids")
     start_at = DateTimeField(required=True)
     due_at = DateTimeField(required=True)
     duration = IntField()  # Minutes
     created_at = DateTimeField(default=datetime.now(tz=timezone.utc))
     updated_at = DateTimeField(default=datetime.now(tz=timezone.utc))
+    meta = {"collection": "assignments"}

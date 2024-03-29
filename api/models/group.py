@@ -14,10 +14,12 @@ from mongoengine import (
 
 class Group(Document):
     """Group Document Model"""
-    name = StringField(required=True)
+    title = StringField(required=True)
     description = StringField()
-    tutor = ReferenceField(User)
-    students = ListField(ReferenceField(User))
-    assignments = ListField(ReferenceField(Assignment))
+    tutor = ReferenceField(User, db_field="tutor_id")
+    students = ListField(ReferenceField(User), db_field="students_ids")
+    assignments = ListField(ReferenceField(Assignment),
+                            db_field="assignments_ids")
     created_at = DateTimeField(default=datetime.now(tz=timezone.utc))
     updated_at = DateTimeField(default=datetime.now(tz=timezone.utc))
+    meta = {"collection": "groups"}

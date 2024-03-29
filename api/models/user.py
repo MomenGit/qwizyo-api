@@ -15,3 +15,4 @@ class User(Document):
                        'tutor', 'student'])  # "tutor" or "student"
     created_at = DateTimeField(default=datetime.now(tz=timezone.utc))
     updated_at = DateTimeField(default=datetime.now(tz=timezone.utc))
+    meta = {"collection": "users"}
