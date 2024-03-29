@@ -20,6 +20,16 @@ class QuizService:
         return quiz
 
     @staticmethod
+    def find_quizzes(tutor):
+        """Returns quiz by id and tutor
+        Args:
+            id (string): quiz id
+            tutor (user): quiz tutor
+        """
+        quizzes = Quiz.objects(tutor=tutor)
+        return quizzes
+
+    @staticmethod
     def create_quiz(tutor, title, questions, description):
         """Updates quiz data
         Args:

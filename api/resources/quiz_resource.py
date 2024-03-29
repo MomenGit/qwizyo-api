@@ -51,7 +51,8 @@ class QuizList(Resource):
     @role_required('tutor')
     def get(self, user):
         """Retrieve a list of quizzes created by the current user (tutor)"""
-        pass
+        quizzes = QuizService.find_quizzes(tutor=user)
+        return [json.loads(quiz.to_json()) for quiz in quizzes], 200
 
     @jwt_required(optional=False, fresh=True)
     @role_required('tutor')
