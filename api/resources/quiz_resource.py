@@ -39,9 +39,14 @@ class Quiz(Resource):
 
     @jwt_required(optional=False, fresh=True)
     @role_required('tutor')
-    def delete(self, id):
+    def delete(self, id, user):
         """Delete a quiz"""
-        pass
+        try:
+            QuizService.delete_quiz(id, tutor=user)
+        except Exception as err:
+            return {"message": str(err)}, 404
+
+        return {"message": "Quiz has been deleted successfully"}, 200
 
 
 class QuizList(Resource):

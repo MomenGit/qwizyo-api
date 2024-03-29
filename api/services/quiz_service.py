@@ -8,7 +8,7 @@ class QuizService:
     """Quiz service functions"""
 
     @staticmethod
-    def find_quiz_by_id(id, tutor):
+    def find_quiz_by_id(id, tutor) -> Quiz:
         """Returns quiz by id and tutor
         Args:
             id (string): quiz id
@@ -66,3 +66,17 @@ class QuizService:
             quiz = QuizService.find_quiz_by_id(id, tutor)
         except Exception as e:
             raise e
+
+    @staticmethod
+    def delete_quiz(id, tutor):
+        """Updates quiz data
+        Args:
+            id (string): quiz id
+            args (dict): data to be updated
+        """
+        try:
+            quiz = QuizService.find_quiz_by_id(id, tutor)
+        except Exception as e:
+            raise e
+
+        quiz.delete()
