@@ -5,6 +5,7 @@ from api.resources import (
     auth_resource,
     group_resource,
     quiz_resource,
+    submission_resource,
     user_resource,
     miscellaneous_resource
 )
@@ -38,3 +39,11 @@ def setup_routes(api):
                      '/quizzes/<string:id>/assignments')
     api.add_resource(assignment_resource.GroupAssignmentsList,
                      '/groups/<string:id>/assignments')
+
+    api.add_resource(submission_resource.SubmissionsList, '/submissions')
+    api.add_resource(submission_resource.Submission,
+                     '/submissions/<string:id>')
+    api.add_resource(submission_resource.AssignmentSubmissionsList,
+                     '/assignments/<string:id>/submissions')
+    api.add_resource(submission_resource.QuizSubmissionsList,
+                     '/quizzes/<string:id>/submissions')
