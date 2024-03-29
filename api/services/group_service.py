@@ -21,7 +21,6 @@ class GroupService:
     def find_group_by_id(id):
         """Find groups for a student or a tutor"""
         group: Group = Group.objects(id=id).first()
-        group.select_related()
 
         return group
 
@@ -59,7 +58,7 @@ class GroupService:
 
         # Update group fields
         if 'name' in args:
-            group.name = args['name']
+            group.title = args['name']
         if 'description' in args:
             group.description = args['description']
 

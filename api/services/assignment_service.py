@@ -19,7 +19,6 @@ class AssignmentService:
             tutor (user): assignment tutor
         """
         assignment: Assignment = Assignment.objects(id=id).first()
-        assignment.select_related()
 
         if assignment is None:
             raise Exception("Assignment not Found")
@@ -102,8 +101,6 @@ class AssignmentService:
 
         assignment = AssignmentService.find_assignment_by_id(id)
 
-        assignment.select_related()
-
         if assignment.quiz.id != tutor.id:
             raise Exception("Unauthorized")
 
@@ -133,7 +130,6 @@ class AssignmentService:
         """
 
         assignment = AssignmentService.find_assignment_by_id(id)
-        assignment.select_related()
 
         if assignment.quiz.id != tutor.id:
             raise Exception("Unauthorized")
