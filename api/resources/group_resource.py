@@ -13,9 +13,10 @@ class Group(Resource):
     @jwt_required(optional=False)
     def get(self, id):
         """Returns group's data"""
-        group = GroupService.find_group_by_id(id)
-        if group is None:
-            return 404
+        try:
+            group = GroupService.find_group_by_id(id)
+        except Exception as err:
+            return {"message": str(err)}, 404
 
         return {
             "title": group.title,
@@ -26,7 +27,7 @@ class Group(Resource):
 
     @jwt_required(optional=False, fresh=True)
     @role_required('tutor')
-    def put(self, id, tutor):
+    def put(self, id, user):
         """Updates group's profile"""
         parser = reqparse.RequestParser()
         parser.add_argument("title", type=str)
@@ -34,19 +35,24 @@ class Group(Resource):
         parser.add_argument("assignments", type=str)
         parser.add_argument("students", type=str)
         args = parser.parse_args()
-        if GroupService.update_group(id, tutor, args):
-            return {}, 200
-        else:
-            return {}, 404
+
+        try:
+            GroupService.update_group(id, user, args)
+        except Exception as err:
+            return {"message": str(err)}, 404
+
+        return {"message": "Group has been updated successfully"}, 200
 
     @jwt_required(optional=False, fresh=True)
     @role_required('tutor')
     def delete(self, id, tutor):
         """Updates group's profile"""
-        if GroupService.delete_group(id=id, tutor=tutor):
-            return {"message": "Group deleted successfully"}, 200
-        else:
-            return {"message": "Group not found"}, 404
+        try:
+            GroupService.delete_group(id=id, tutor=tutor)
+        except Exception as err:
+            return {"message": str(err)}, 404
+
+        return {"message": "Group has been deleted successfully"}, 200
 
 
 class Groups(Resource):
