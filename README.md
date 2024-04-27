@@ -1,5 +1,7 @@
 # Qwizyo Api
 
+![Logo](./documentation/Logo.svg)
+
 Qwizyo is a web application for creating and managing quizzes. It allows tutors to create quizzes for their students, track their performance, and analyze their results.
 
 ## Table of Contents
@@ -22,6 +24,10 @@ Qwizyo API is the backend component of the Qwizyo web application. It provides a
 - Group management: Create, update, and delete groups of students.
 - Assignment management: Create, update, and delete assignments for student groups.
 - Quiz management: Create, update, and delete quizzes for assignments.
+
+### Database Schema
+
+![Database Schema](./documentation/db_schema.png)
 
 ## Installation
 
