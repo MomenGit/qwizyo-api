@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
 """Defines Submission Document Model"""
 from datetime import datetime, timezone
-from wtforms import StringField
 from api.models.assignment import Assignment
-from api.models.question import Question
 from api.models.user import User
 from mongoengine import (
     ReferenceField,
+    StringField,
     DateTimeField,
     FloatField,
     BooleanField,
     EmbeddedDocument,
     IntField,
     EmbeddedDocumentListField,
-    Document
+    Document,
+    ObjectIdField
 )
 
 
 class Answer(EmbeddedDocument):
     """Submission Answer Document Model"""
-    question = ReferenceField(Question, db_field="question_id")
+    question_id = ObjectIdField()
     submitted_answer = StringField()
     is_correct = BooleanField()
     points = FloatField()  # For questions other than multiple-choice
@@ -34,6 +34,7 @@ class Submission(Document):
     answers = EmbeddedDocumentListField(Answer)
     score = FloatField()
     completion_time = IntField()
+    requested_at = DateTimeField()
     submitted_at = DateTimeField()
     created_at = DateTimeField(default=datetime.now(tz=timezone.utc))
     updated_at = DateTimeField(default=datetime.now(tz=timezone.utc))
