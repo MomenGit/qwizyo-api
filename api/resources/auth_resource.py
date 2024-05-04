@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Defines Auth Resources for Auth Routes Handling"""
+import json
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import (
     jwt_required,
@@ -33,8 +34,12 @@ class RegisterAuth(Resource):
     def post(self):
         """Register new User to the database"""
         data = self.parser.parse_args()
+        try:
+            new_user = AuthService.register_user(data)
+        except Exception as err:
+            return err.args[0], err.args[1]
 
-        return AuthService.register_user(data)
+        return json.loads(new_user), 200
 
 
 class LoginAuth(Resource):

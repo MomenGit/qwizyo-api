@@ -56,22 +56,22 @@ class AuthService:
         """
         retrieve_username = User.objects(username=data["username"])
         if retrieve_username:
-            return {"message": "The username already exist"}, 409
+            raise Exception({"message": "The username already exist"}, 409)
 
         retrieve_email = User.objects(email=data["email"])
         if retrieve_email:
-            return {"message": "The email already exist"}, 409
+            raise Exception({"message": "The email already exist"}, 409)
 
         password: str = data["password"]
         if len(password) < 7:
-            return {"message": "The password is too short"}, 409
+            raise Exception({"message": "The password is too short"}, 409)
         if len(password) > 14:
-            return {"message": "The password is too long"}, 409
+            raise Exception({"message": "The password is too long"}, 409)
         if not password.isalnum():
-            return {
+            raise Exception({
                 "message":
                 "The password can not contain non-alphanumeric characters"
-            }, 409
+            }, 409)
 
         new_user = User(
             username=data["username"],
@@ -85,4 +85,4 @@ class AuthService:
         )
         new_user.save()
         del new_user.password
-        return new_user.to_json(), 200
+        return new_user.to_json()
