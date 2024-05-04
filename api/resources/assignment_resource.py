@@ -12,10 +12,11 @@ class Assignment(Resource):
     """Assignment Resource Route Handler"""
 
     @jwt_required(optional=False)
-    def get(self, id):
+    @role_required('tutor')
+    def get(self, id, user):
         """Retrieve details of a specific assignment"""
         try:
-            assignment = AssignmentService.find_assignment_by_id(id)
+            assignment = AssignmentService.find_assignment_by_id(id, user)
         except Exception as err:
             return {"message": str(err)}, 404
 
@@ -115,7 +116,7 @@ class GroupAssignmentsList(Resource):
 
     @jwt_required(optional=False)
     @role_required('tutor', 'student')
-    def get(self, id):
+    def get(self, id, user):
         """Retrieve assignments of a specific group"""
         try:
             assignments = AssignmentService.find_assignments_of_group(

@@ -12,7 +12,7 @@ class AssignmentService:
     """Assignment service functions"""
 
     @staticmethod
-    def find_assignment_by_id(id) -> Assignment:
+    def find_assignment_by_id(id, tutor) -> Assignment:
         """Returns assignment by id and tutor
         Args:
             id (string): assignment id
@@ -107,10 +107,7 @@ class AssignmentService:
             due_at (str): assignment due date
         """
 
-        assignment = AssignmentService.find_assignment_by_id(id)
-
-        if assignment.quiz.id != tutor.id:
-            raise Exception("Unauthorized")
+        assignment = AssignmentService.find_assignment_by_id(id, tutor)
 
         if duration:
             assignment.duration = duration
