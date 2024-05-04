@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Defines App Configurations for different environments"""
+from datetime import timedelta
 import os
 from dotenv import load_dotenv
 
@@ -12,6 +13,7 @@ class Config:
     DEBUG = False
     SECRET_KEY = os.getenv("SECRET_KEY")
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     # Add other default configuration variables
 
 
