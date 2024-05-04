@@ -74,14 +74,13 @@ class SubmissionsList(Resource):
     @role_required('student')
     def get(self, user):
         """Retrieve assignments of a specific student"""
-        """ try:
-            assignments = AssignmentService.find_assignments_of_student(
+        try:
+            submissions = SubmissionService.find_submissions_of_student(
                 student=user)
         except Exception as err:
             return {"message": str(err)}, 404
 
-        return [json.loads(assignment.to_json())for assignment in assignments], 200 """
-        pass
+        return [json.loads(submission.to_json())for submission in submissions], 200
 
     @jwt_required(optional=False, fresh=True)
     @role_required('student')

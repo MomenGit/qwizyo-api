@@ -42,11 +42,11 @@ class SubmissionService:
 
     @staticmethod
     def find_submissions_of_student(student):
-        """Returns submissions by quiz_id and tutor
+        """Returns submissions by student_id and tutor
         Args:
             student (User): student user
         """
-        submissions = Submission.objects(students=student)
+        submissions = Submission.objects(student=student)
 
         return submissions
 
